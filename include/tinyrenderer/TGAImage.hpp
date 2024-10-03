@@ -24,17 +24,22 @@ struct TGAHeader {
 class TGAImage {
   public:
     TGAImage(const char *filename);
+    TGAImage(std::uint16_t width, std::uint16_t height, std::uint8_t bpp);
+    void save(const char *filename) const;
 
-  private:
     void flipVertically();
     void flipHorizontally();
-    void load_rle_data(std::ifstream &file);
 
-  private:
     enum Format { GRAYSCALE = 1, RGB = 3, RGBA = 4 };
 
-    std::size_t width;
-    std::size_t height;
-    std::uint8_t bytespp;
+  private:
+    void load_tga_data(const char *filename);
+    void write_tga_data(const char *filename, bool rle = true) const;
+    void load_rle_data(std::ifstream &file);
+    void write_rle_data(std::ofstream &file) const;
+
+    std::uint16_t width = 0;
+    std::uint16_t height = 0;
+    std::uint8_t bytespp = 1;
     std::vector<std::uint8_t> data;
 };

@@ -4,5 +4,5 @@ My inplementation from [ssloy/tinyrenderer](https://github.com/ssloy/tinyrendere
 
 ## Lesson 0 Getting Started
 
-- TGA image reader
+- TGA image reader/writer
   - [TGA Specs](http://tfc.duke.free.fr/coding/tga_specs.pdf)

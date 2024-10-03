@@ -9,5 +9,9 @@ int main(int argc, char *argv[]) {
     }
 
     TGAImage image(argv[1]);
+
+    image.flipVertically();
+    image.save("output.tga");
+
     return 0;
 }
