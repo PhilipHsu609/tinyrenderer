@@ -9,9 +9,9 @@
 
 TGAImage::TGAImage(const char *filename) { load_tga_data(filename); }
 
-TGAImage::TGAImage(std::uint16_t width, std::uint16_t height, std::uint8_t bpp)
-    : width(width), height(height), bytespp(bpp),
-      data(static_cast<std::size_t>(width) * height * bpp) {}
+TGAImage::TGAImage(std::uint16_t width, std::uint16_t height, std::uint8_t bytespp)
+    : width(width), height(height), bytespp(bytespp),
+      data(static_cast<std::size_t>(width) * height * bytespp) {}
 
 void TGAImage::save(const char *filename) const { write_tga_data(filename); }
 

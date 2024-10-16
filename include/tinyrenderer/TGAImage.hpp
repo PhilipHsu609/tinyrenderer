@@ -24,7 +24,7 @@ struct TGAHeader {
 class TGAImage {
   public:
     TGAImage(const char *filename);
-    TGAImage(std::uint16_t width, std::uint16_t height, std::uint8_t bpp);
+    TGAImage(std::uint16_t width, std::uint16_t height, std::uint8_t bytespp);
     void save(const char *filename) const;
 
     void flipVertically();
