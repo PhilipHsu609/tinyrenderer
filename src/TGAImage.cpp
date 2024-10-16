@@ -64,6 +64,15 @@ void TGAImage::set(std::uint16_t x, std::uint16_t y, TGAColor color) {
     std::memcpy(&data[index * bytespp], &bgra, bytespp);
 }
 
+std::uint8_t TGAImage::get(std::uint16_t x, std::uint16_t y) const {
+    if (x >= width || y >= height) {
+        throw std::out_of_range("Coordinates out of bounds");
+    }
+    auto x_ = static_cast<std::size_t>(x);
+    auto y_ = static_cast<std::size_t>(y);
+    return data[(x_ + y_ * width) * bytespp];
+}
+
 void TGAImage::load_tga_data(const char *filename) {
     std::ifstream file(filename, std::ios::binary);
     if (!file.is_open()) {

@@ -56,6 +56,12 @@ class TGAImage {
     void flipHorizontally();
 
     void set(std::uint16_t x, std::uint16_t y, TGAColor color);
+    std::uint8_t get(std::uint16_t x, std::uint16_t y) const;
+
+    std::uint16_t get_width() const { return width; }
+    std::uint16_t get_height() const { return height; }
+    std::uint8_t get_bytespp() const { return bytespp; }
+    std::vector<std::uint8_t> &buffer() { return data; }
 
     enum Format { GRAYSCALE = 1, RGB = 3, RGBA = 4 };
 
