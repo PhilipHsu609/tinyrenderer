@@ -3,6 +3,7 @@
 #include <fmt/core.h>
 
 #include <algorithm>
+#include <cstring>
 #include <fstream>
 #include <stdexcept>
 #include <vector>
@@ -52,6 +53,15 @@ void TGAImage::flipHorizontally() {
             }
         }
     }
+}
+
+void TGAImage::set(std::uint16_t x, std::uint16_t y, TGAColor color) {
+    if (x >= width || y >= height) {
+        throw std::out_of_range("Coordinates out of bounds");
+    }
+    std::size_t index = static_cast<std::size_t>(x) + static_cast<std::size_t>(y) * width;
+    std::uint32_t bgra = color();
+    std::memcpy(&data[index * bytespp], &bgra, bytespp);
 }
 
 void TGAImage::load_tga_data(const char *filename) {
