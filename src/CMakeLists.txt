@@ -2,6 +2,9 @@ add_executable(
     main
     main.cpp
     TGAImage.cpp
+    Drawer.cpp
+    Vector.cpp
+    Model.cpp
 )
 
 target_include_directories(
