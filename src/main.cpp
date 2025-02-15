@@ -18,9 +18,9 @@ int main() {
     fmt::print("nverts: {}\n", model.nverts());
     fmt::print("nfaces: {}\n", model.nfaces());
 
-    for (std::size_t i = 0; i < model.nfaces(); i++) {
-        std::vector<std::size_t> face = model.face(i);
-        for (std::size_t j = 0; j < face.size(); j++) {
+    for (size_t i = 0; i < model.nfaces(); i++) {
+        std::vector<size_t> face = model.face(i);
+        for (size_t j = 0; j < face.size(); j++) {
             Vec3f v0 = model.vert(face[j]);
             Vec3f v1 = model.vert(face[(j + 1) % face.size()]);
             auto x0 = static_cast<int>((v0[0] + 1.f) / 2.f * (width - 1));

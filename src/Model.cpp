@@ -24,11 +24,11 @@ Model::Model(const char *filename) {
                 verts_.push_back(v);
             }
         } else if (line[0] == 'f') {
-            std::vector<std::size_t> f;
+            std::vector<size_t> f;
 
-            std::size_t vidx{}; // vertex index
-            std::size_t tidx{}; // texture index
-            std::size_t nidx{}; // normal index
+            size_t vidx{}; // vertex index
+            size_t tidx{}; // texture index
+            size_t nidx{}; // normal index
 
             ss >> c;
             while (ss >> vidx >> c >> tidx >> c >> nidx) {
