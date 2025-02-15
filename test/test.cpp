@@ -32,11 +32,11 @@ TEST(Vec3, Operators) {
     EXPECT_TRUE(v3 == Vec3f(-3.0f, 6.0f, -3.0f));
 
     // Test normalization
-    v3 = v1.normalize();
+    Vec3d v4 = v1.normalize();
     float norm = std::sqrt(1.0f + 4.0f + 9.0f);
-    EXPECT_NEAR(v3.x, 1.0f / norm, 1e-6);
-    EXPECT_NEAR(v3.y, 2.0f / norm, 1e-6);
-    EXPECT_NEAR(v3.z, 3.0f / norm, 1e-6);
+    EXPECT_NEAR(v4[0], 1.0f / norm, 1e-6);
+    EXPECT_NEAR(v4[1], 2.0f / norm, 1e-6);
+    EXPECT_NEAR(v4[2], 3.0f / norm, 1e-6);
 
     // Test equality
     EXPECT_TRUE(v1 == Vec3f(1.0f, 2.0f, 3.0f));
@@ -68,10 +68,10 @@ TEST(Vec2, Operators) {
     EXPECT_EQ(dot, 11.0f);
 
     // Test normalization
-    v3 = v1.normalize();
+    Vec2d v4 = v1.normalize();
     float norm = std::sqrt(1.0f + 4.0f);
-    EXPECT_NEAR(v3.x, 1.0f / norm, 1e-6);
-    EXPECT_NEAR(v3.y, 2.0f / norm, 1e-6);
+    EXPECT_NEAR(v4[0], 1.0f / norm, 1e-6);
+    EXPECT_NEAR(v4[1], 2.0f / norm, 1e-6);
 
     // Test equality
     EXPECT_TRUE(v1 == Vec2f(1.0f, 2.0f));

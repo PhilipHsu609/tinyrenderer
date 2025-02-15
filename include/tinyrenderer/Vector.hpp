@@ -1,98 +1,136 @@
 #pragma once
 
-#include <cmath>
-#include <type_traits>
+#include <array>       // std::array
+#include <cassert>     // assert
+#include <cmath>       // std::sqrt
+#include <cstddef>     // size_t
+#include <type_traits> // std::enable_if_t, std::is_same_v
 
-template <typename T, std::enable_if_t<std::is_floating_point_v<T>, bool> = true>
-class Vec3 {
+template <typename T, size_t N>
+class Vec {
   public:
-    T x, y, z;
+    std::array<T, N> data;
 
-    Vec3(T xx = T(0), T yy = T(0), T zz = T(0)) : x(xx), y(yy), z(zz) {}
+    Vec() { data.fill(T(0)); }
 
-    Vec3 operator+(const Vec3 &v) const { return Vec3(x + v.x, y + v.y, z + v.z); }
-    Vec3 operator-(const Vec3 &v) const { return Vec3(x - v.x, y - v.y, z - v.z); }
-    Vec3 operator*(T s) const { return Vec3(x * s, y * s, z * s); }
-    Vec3 operator/(T s) const { return Vec3(x / s, y / s, z / s); }
-    Vec3 operator^(const Vec3 &v) const {
-        return Vec3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
+    template <typename... Args,
+              typename = std::enable_if_t<(std::is_same_v<T, Args> && ...)>>
+    Vec(Args... args) : data{{args...}} {
+        static_assert(sizeof...(args) == N,
+                      "Number of arguments must match the dimension of the vector");
     }
-    bool operator==(const Vec3 &v) const { return x == v.x && y == v.y && z == v.z; }
-    T operator[](int i) const { return i == 0 ? x : (i == 1 ? y : z); }
-    T operator*(const Vec3 &v) const { return x * v.x + y * v.y + z * v.z; }
 
-    T norm() const { return std::sqrt(x * x + y * y + z * z); }
-    Vec3 normalize() const { return *this / norm(); }
-    T length() const { return norm(); }
+    T &operator[](int i) { return data[static_cast<size_t>(i)]; }
+    const T &operator[](int i) const { return data[static_cast<size_t>(i)]; }
 
-    Vec3 &operator+=(const Vec3 &v) {
-        x += v.x;
-        y += v.y;
-        z += v.z;
+    Vec operator+(const Vec &v) const {
+        Vec result;
+        for (size_t i = 0; i < N; ++i) {
+            result[i] = data[i] + v[i];
+        }
+        return result;
+    }
+
+    Vec operator-(const Vec &v) const {
+        Vec result;
+        for (size_t i = 0; i < N; ++i) {
+            result[i] = data[i] - v[i];
+        }
+        return result;
+    }
+
+    Vec operator*(T s) const {
+        Vec result;
+        for (size_t i = 0; i < N; ++i) {
+            result[i] = data[i] * s;
+        }
+        return result;
+    }
+
+    Vec operator/(T s) const {
+        Vec result;
+        for (size_t i = 0; i < N; ++i) {
+            result[i] = data[i] / s;
+        }
+        return result;
+    }
+
+    bool operator==(const Vec &v) const {
+        for (size_t i = 0; i < N; ++i) {
+            if (data[i] != v[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    double norm() const {
+        double sum = 0;
+        for (size_t i = 0; i < N; ++i) {
+            sum += data[i] * data[i];
+        }
+        return std::sqrt(sum);
+    }
+
+    Vec<double, N> normalize() const {
+        double n = norm();
+        Vec<double, N> result;
+        for (size_t i = 0; i < N; ++i) {
+            result[i] = data[i] / n;
+        }
+        return result;
+    }
+
+    double length() const { return norm(); }
+
+    Vec &operator+=(const Vec &v) {
+        for (size_t i = 0; i < N; ++i) {
+            data[i] += v[i];
+        }
         return *this;
     }
-    Vec3 &operator-=(const Vec3 &v) {
-        x -= v.x;
-        y -= v.y;
-        z -= v.z;
+
+    Vec &operator-=(const Vec &v) {
+        for (size_t i = 0; i < N; ++i) {
+            data[i] -= v[i];
+        }
         return *this;
     }
-    Vec3 &operator*=(T s) {
-        x *= s;
-        y *= s;
-        z *= s;
+
+    Vec &operator*=(T s) {
+        for (size_t i = 0; i < N; ++i) {
+            data[i] *= s;
+        }
         return *this;
     }
-    Vec3 &operator/=(T s) {
-        x /= s;
-        y /= s;
-        z /= s;
+
+    Vec &operator/=(T s) {
+        for (size_t i = 0; i < N; ++i) {
+            data[i] /= s;
+        }
         return *this;
+    }
+
+    // Dot product
+    T operator*(const Vec &v) const {
+        T result = 0;
+        for (size_t i = 0; i < N; ++i) {
+            result += data[i] * v[i];
+        }
+        return result;
+    }
+
+    // Vec3 cross product
+    template <typename U = T>
+    typename std::enable_if<N == 3, Vec<U, 3>>::type operator^(const Vec &v) const {
+        return Vec(data[1] * v[2] - data[2] * v[1], data[2] * v[0] - data[0] * v[2],
+                   data[0] * v[1] - data[1] * v[0]);
     }
 };
 
-template <typename T, std::enable_if_t<std::is_floating_point_v<T>, bool> = true>
-class Vec2 {
-  public:
-    T x, y;
-
-    Vec2(T xx = T(0), T yy = T(0)) : x(xx), y(yy) {}
-
-    Vec2 operator+(const Vec2 &v) const { return Vec2(x + v.x, y + v.y); }
-    Vec2 operator-(const Vec2 &v) const { return Vec2(x - v.x, y - v.y); }
-    Vec2 operator*(T s) const { return Vec2(x * s, y * s); }
-    Vec2 operator/(T s) const { return Vec2(x / s, y / s); }
-    bool operator==(const Vec2 &v) const { return x == v.x && y == v.y; }
-    T operator[](int i) const { return i == 0 ? x : y; }
-    T operator*(const Vec2 &v) const { return x * v.x + y * v.y; }
-
-    T norm() const { return std::sqrt(x * x + y * y); }
-    Vec2 normalize() const { return *this / norm(); }
-    T length() const { return norm(); }
-
-    Vec2 &operator+=(const Vec2 &v) {
-        x += v.x;
-        y += v.y;
-        return *this;
-    }
-    Vec2 &operator-=(const Vec2 &v) {
-        x -= v.x;
-        y -= v.y;
-        return *this;
-    }
-    Vec2 &operator*=(T s) {
-        x *= s;
-        y *= s;
-        return *this;
-    }
-    Vec2 &operator/=(T s) {
-        x /= s;
-        y /= s;
-        return *this;
-    }
-};
-
-using Vec3f = Vec3<float>;
-using Vec2f = Vec2<float>;
-using Vec3d = Vec3<double>;
-using Vec2d = Vec2<double>;
+using Vec3f = Vec<float, 3>;
+using Vec2f = Vec<float, 2>;
+using Vec3d = Vec<double, 3>;
+using Vec2d = Vec<double, 2>;
+using Vec3i = Vec<int, 3>;
+using Vec2i = Vec<int, 2>;

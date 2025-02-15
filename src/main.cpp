@@ -23,10 +23,10 @@ int main() {
         for (std::size_t j = 0; j < face.size(); j++) {
             Vec3f v0 = model.vert(face[j]);
             Vec3f v1 = model.vert(face[(j + 1) % face.size()]);
-            auto x0 = static_cast<int>((v0.x + 1.f) / 2.f * (width - 1));
-            auto y0 = static_cast<int>((v0.y + 1.f) / 2.f * (height - 1));
-            auto x1 = static_cast<int>((v1.x + 1.f) / 2.f * (width - 1));
-            auto y1 = static_cast<int>((v1.y + 1.f) / 2.f * (height - 1));
+            auto x0 = static_cast<int>((v0[0] + 1.f) / 2.f * (width - 1));
+            auto y0 = static_cast<int>((v0[1] + 1.f) / 2.f * (height - 1));
+            auto x1 = static_cast<int>((v1[0] + 1.f) / 2.f * (width - 1));
+            auto y1 = static_cast<int>((v1[1] + 1.f) / 2.f * (height - 1));
             ::line(x0, y0, x1, y1, image, white);
         }
     }

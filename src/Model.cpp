@@ -20,7 +20,7 @@ Model::Model(const char *filename) {
             if (line[1] == ' ') {
                 ss >> c;
                 Vec3f v;
-                ss >> v.x >> v.y >> v.z;
+                ss >> v[0] >> v[1] >> v[2];
                 verts_.push_back(v);
             }
         } else if (line[0] == 'f') {
