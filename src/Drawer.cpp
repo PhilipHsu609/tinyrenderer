@@ -2,9 +2,7 @@
 #include "tinyrenderer/TGAImage.hpp"
 #include "tinyrenderer/Vector.hpp"
 
-#include <cassert>
 #include <cmath>
-#include <cstdint>
 
 void line(Vec2i u, Vec2i v, TGAImage &image, TGAColor color) {
     int x0 = u[0];
@@ -32,11 +30,9 @@ void line(Vec2i u, Vec2i v, TGAImage &image, TGAColor color) {
 
     for (int x = x0; x <= x1; x++) {
         if (steep) {
-            image.set(static_cast<std::uint16_t>(y), static_cast<std::uint16_t>(x),
-                      color);
+            image.set(y, x, color);
         } else {
-            image.set(static_cast<std::uint16_t>(x), static_cast<std::uint16_t>(y),
-                      color);
+            image.set(x, y, color);
         }
         if (D > 0) {
             y += y1 > y0 ? 1 : -1;

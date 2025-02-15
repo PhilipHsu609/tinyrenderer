@@ -55,24 +55,6 @@ void TGAImage::flipHorizontally() {
     }
 }
 
-void TGAImage::set(std::uint16_t x, std::uint16_t y, TGAColor color) {
-    if (x >= width || y >= height) {
-        throw std::out_of_range("Coordinates out of bounds");
-    }
-    size_t index = static_cast<size_t>(x) + static_cast<size_t>(y) * width;
-    std::uint32_t bgra = color();
-    std::memcpy(&data[index * bytespp], &bgra, bytespp);
-}
-
-std::uint8_t TGAImage::get(std::uint16_t x, std::uint16_t y) const {
-    if (x >= width || y >= height) {
-        throw std::out_of_range("Coordinates out of bounds");
-    }
-    auto x_ = static_cast<size_t>(x);
-    auto y_ = static_cast<size_t>(y);
-    return data[(x_ + y_ * width) * bytespp];
-}
-
 void TGAImage::load_tga_data(const char *filename) {
     std::ifstream file(filename, std::ios::binary);
     if (!file.is_open()) {

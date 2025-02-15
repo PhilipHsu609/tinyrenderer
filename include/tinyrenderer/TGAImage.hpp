@@ -3,6 +3,7 @@
 #include <array>
 #include <cstdint>
 #include <fstream>
+#include <type_traits>
 #include <vector>
 
 static_assert(true); // This is a workaround for a bug in clangd
@@ -25,12 +26,12 @@ struct TGAColor {
     std::uint8_t b{}, g{}, r{}, a{};
     std::uint8_t bytespp = 1;
 
-    TGAColor() = default;
-    TGAColor(std::uint8_t r, std::uint8_t g, std::uint8_t b)
+    constexpr TGAColor() = default;
+    constexpr TGAColor(std::uint8_t r, std::uint8_t g, std::uint8_t b)
         : b(b), g(g), r(r), a(255), bytespp(3) {}
-    TGAColor(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a)
+    constexpr TGAColor(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a)
         : b(b), g(g), r(r), a(a), bytespp(4) {}
-    TGAColor(std::uint32_t rgba, std::uint8_t bytespp) : bytespp(bytespp) {
+    constexpr TGAColor(std::uint32_t rgba, std::uint8_t bytespp) : bytespp(bytespp) {
         this->operator()(rgba);
     }
 
@@ -55,8 +56,26 @@ class TGAImage {
     void flipVertically();
     void flipHorizontally();
 
-    void set(std::uint16_t x, std::uint16_t y, TGAColor color);
-    std::uint8_t get(std::uint16_t x, std::uint16_t y) const;
+    template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
+    void set(T x, T y, TGAColor color) {
+        if (static_cast<std::uint16_t>(x) >= width ||
+            static_cast<std::uint16_t>(y) >= height) {
+            throw std::out_of_range("Coordinates out of bounds");
+        }
+        size_t index = static_cast<size_t>(x) + static_cast<size_t>(y) * width;
+        std::uint32_t bgra = color();
+        std::memcpy(&data[index * bytespp], &bgra, bytespp);
+    }
+
+    template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
+    std::uint8_t get(T x, T y) const {
+        if (static_cast<std::uint16_t>(x) >= width ||
+            static_cast<std::uint16_t>(y) >= height) {
+            throw std::out_of_range("Coordinates out of bounds");
+        }
+        size_t index = static_cast<size_t>(x) + static_cast<size_t>(y) * width;
+        return data[index * bytespp];
+    }
 
     std::uint16_t get_width() const { return width; }
     std::uint16_t get_height() const { return height; }
@@ -76,3 +95,10 @@ class TGAImage {
     std::uint8_t bytespp = 1;
     std::vector<std::uint8_t> data;
 };
+
+// Common color constants
+constexpr TGAColor WHITE_COLOR(255, 255, 255, 255);
+constexpr TGAColor BLACK_COLOR(0, 0, 0, 255);
+constexpr TGAColor RED_COLOR(255, 0, 0, 255);
+constexpr TGAColor GREEN_COLOR(0, 255, 0, 255);
+constexpr TGAColor BLUE_COLOR(0, 0, 255, 255);
