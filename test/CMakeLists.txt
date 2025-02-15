@@ -2,7 +2,7 @@ set(TEST_TARGET mytest)
 
 add_executable(
     ${TEST_TARGET}
-    test.cpp
+    VectorTest.cpp
     ${PROJECT_SOURCE_DIR}/src/Vector.cpp
 )
 

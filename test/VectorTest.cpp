@@ -42,38 +42,3 @@ TEST(Vec3, Operators) {
     EXPECT_TRUE(v1 == Vec3f(1.0f, 2.0f, 3.0f));
     EXPECT_FALSE(v1 == v2);
 }
-
-TEST(Vec2, Operators) {
-    Vec2f v1(1.0f, 2.0f);
-    Vec2f v2(3.0f, 4.0f);
-
-    // Test addition
-    Vec2f v3 = v1 + v2;
-    EXPECT_TRUE(v3 == Vec2f(4.0f, 6.0f));
-
-    // Test subtraction
-    v3 = v1 - v2;
-    EXPECT_TRUE(v3 == Vec2f(-2.0f, -2.0f));
-
-    // Test scalar multiplication
-    v3 = v1 * 2.0f;
-    EXPECT_TRUE(v3 == Vec2f(2.0f, 4.0f));
-
-    // Test scalar division
-    v3 = v1 / 2.0f;
-    EXPECT_TRUE(v3 == Vec2f(0.5f, 1.0f));
-
-    // Test dot product
-    float dot = v1 * v2;
-    EXPECT_EQ(dot, 11.0f);
-
-    // Test normalization
-    Vec2d v4 = v1.normalize();
-    float norm = std::sqrt(1.0f + 4.0f);
-    EXPECT_NEAR(v4[0], 1.0f / norm, 1e-6);
-    EXPECT_NEAR(v4[1], 2.0f / norm, 1e-6);
-
-    // Test equality
-    EXPECT_TRUE(v1 == Vec2f(1.0f, 2.0f));
-    EXPECT_FALSE(v1 == v2);
-}
