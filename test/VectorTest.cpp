@@ -38,7 +38,25 @@ TEST(Vec3, Operators) {
     EXPECT_NEAR(v4[1], 2.0f / norm, 1e-6);
     EXPECT_NEAR(v4[2], 3.0f / norm, 1e-6);
 
-    // Test equality
-    EXPECT_TRUE(v1 == Vec3f(1.0f, 2.0f, 3.0f));
-    EXPECT_FALSE(v1 == v2);
+    // Test in-place addition
+    v3.clear();
+    v3 += v2;
+    EXPECT_TRUE(v3 == Vec3f(4.0f, 5.0f, 6.0f));
+
+    // Test in-place subtraction
+    v3.clear();
+    v3 -= v2;
+    EXPECT_TRUE(v3 == Vec3f(-4.0f, -5.0f, -6.0f));
+
+    // Test in-place scalar multiplication
+    v3 *= 2.0f;
+    EXPECT_TRUE(v3 == Vec3f(-8.0f, -10.0f, -12.0f));
+
+    // Test in-place scalar division
+    v3 /= 2.0f;
+    EXPECT_TRUE(v3 == Vec3f(-4.0f, -5.0f, -6.0f));
+
+    // Test type conversion
+    Vec3i v5(v3);
+    EXPECT_TRUE(v5 == Vec3i(-4, -5, -6));
 }

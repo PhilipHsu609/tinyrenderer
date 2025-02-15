@@ -20,6 +20,15 @@ class Vec {
                       "Number of arguments must match the dimension of the vector");
     }
 
+    template <typename U>
+    Vec(const Vec<U, N> &v) {
+        for (size_t i = 0; i < N; ++i) {
+            data[i] = static_cast<T>(v[i]);
+        }
+    }
+
+    void clear() { data.fill(T(0)); }
+
     T &operator[](int i) { return data[static_cast<size_t>(i)]; }
     const T &operator[](int i) const { return data[static_cast<size_t>(i)]; }
 
