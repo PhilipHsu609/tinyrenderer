@@ -7,29 +7,18 @@
 #include <cassert>
 
 int main() {
-    constexpr int width = 800;
-    constexpr int height = 800;
+    constexpr int width = 200;
+    constexpr int height = 200;
 
     TGAImage image(width, height, TGAImage::RGB);
-    TGAColor white(255, 255, 255, 255);
 
-    Model model("obj/african_head/african_head.obj");
+    Vec2i t0[3] = {Vec2i(10, 70), Vec2i(50, 160), Vec2i(70, 80)};
+    Vec2i t1[3] = {Vec2i(180, 50), Vec2i(150, 1), Vec2i(70, 180)};
+    Vec2i t2[3] = {Vec2i(180, 150), Vec2i(120, 160), Vec2i(130, 180)};
 
-    fmt::print("nverts: {}\n", model.nverts());
-    fmt::print("nfaces: {}\n", model.nfaces());
-
-    for (size_t i = 0; i < model.nfaces(); i++) {
-        std::vector<size_t> face = model.face(i);
-        for (size_t j = 0; j < face.size(); j++) {
-            Vec3f v0 = model.vert(face[j]);
-            Vec3f v1 = model.vert(face[(j + 1) % face.size()]);
-            auto x0 = static_cast<int>((v0[0] + 1.f) / 2.f * (width - 1));
-            auto y0 = static_cast<int>((v0[1] + 1.f) / 2.f * (height - 1));
-            auto x1 = static_cast<int>((v1[0] + 1.f) / 2.f * (width - 1));
-            auto y1 = static_cast<int>((v1[1] + 1.f) / 2.f * (height - 1));
-            ::line(Vec2i(x0, y0), Vec2i(x1, y1), image, white);
-        }
-    }
+    triangle(t0[0], t0[1], t0[2], image, RED_COLOR);
+    triangle(t1[0], t1[1], t1[2], image, WHITE_COLOR);
+    triangle(t2[0], t2[1], t2[2], image, GREEN_COLOR);
 
     image.flipVertically();
     image.save("output.tga");
