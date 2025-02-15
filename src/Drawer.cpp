@@ -1,11 +1,17 @@
 #include "tinyrenderer/Drawer.hpp"
 #include "tinyrenderer/TGAImage.hpp"
+#include "tinyrenderer/Vector.hpp"
 
 #include <cassert>
 #include <cmath>
 #include <cstdint>
 
-void line(int x0, int y0, int x1, int y1, TGAImage &image, TGAColor color) {
+void line(Vec2i u, Vec2i v, TGAImage &image, TGAColor color) {
+    int x0 = u[0];
+    int y0 = u[1];
+    int x1 = v[0];
+    int y1 = v[1];
+
     bool steep = false;
     if (std::abs(x0 - x1) < std::abs(y0 - y1)) {
         std::swap(x0, y0);

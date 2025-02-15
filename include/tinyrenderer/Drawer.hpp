@@ -1,5 +1,6 @@
 #pragma once
 
 #include "tinyrenderer/TGAImage.hpp"
+#include "tinyrenderer/Vector.hpp"
 
-void line(int x0, int y0, int x1, int y1, TGAImage &image, TGAColor color);
+void line(Vec2i u, Vec2i v, TGAImage &image, TGAColor color);

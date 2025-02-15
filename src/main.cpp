@@ -27,7 +27,7 @@ int main() {
             auto y0 = static_cast<int>((v0[1] + 1.f) / 2.f * (height - 1));
             auto x1 = static_cast<int>((v1[0] + 1.f) / 2.f * (width - 1));
             auto y1 = static_cast<int>((v1[1] + 1.f) / 2.f * (height - 1));
-            ::line(x0, y0, x1, y1, image, white);
+            ::line(Vec2i(x0, y0), Vec2i(x1, y1), image, white);
         }
     }
 

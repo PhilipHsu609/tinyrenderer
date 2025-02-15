@@ -8,9 +8,9 @@
 
 template <typename T, size_t N>
 class Vec {
-  public:
     std::array<T, N> data;
 
+  public:
     Vec() { data.fill(T(0)); }
 
     template <typename... Args,
