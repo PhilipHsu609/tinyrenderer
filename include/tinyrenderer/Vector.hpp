@@ -1,10 +1,10 @@
 #pragma once
 
-#include <array>       // std::array
-#include <cassert>     // assert
-#include <cmath>       // std::sqrt
-#include <cstddef>     // size_t
-#include <type_traits> // std::enable_if_t, std::is_same_v
+#include <array>
+#include <cassert>
+#include <cmath>
+#include <cstddef>
+#include <type_traits>
 
 template <typename T, size_t N>
 class Vec {
@@ -20,17 +20,24 @@ class Vec {
                       "Number of arguments must match the dimension of the vector");
     }
 
-    template <typename U>
-    Vec(const Vec<U, N> &v) {
-        for (size_t i = 0; i < N; ++i) {
+    template <typename U, size_t M, typename = std::enable_if_t<M <= N>>
+    Vec(const Vec<U, M> &v) {
+        for (size_t i = 0; i < M; ++i) {
             data[i] = static_cast<T>(v[i]);
         }
     }
 
     void clear() { data.fill(T(0)); }
 
-    T &operator[](int i) { return data[static_cast<size_t>(i)]; }
-    const T &operator[](int i) const { return data[static_cast<size_t>(i)]; }
+    template <typename U, typename = std::enable_if_t<std::is_integral_v<U>>>
+    T &operator[](U i) {
+        return data[static_cast<size_t>(i)];
+    }
+
+    template <typename U, typename = std::enable_if_t<std::is_integral_v<U>>>
+    const T &operator[](U i) const {
+        return data[static_cast<size_t>(i)];
+    }
 
     Vec operator+(const Vec &v) const {
         Vec result;
@@ -131,7 +138,7 @@ class Vec {
 
     // Vec3 cross product
     template <typename U = T>
-    typename std::enable_if<N == 3, Vec<U, 3>>::type operator^(const Vec &v) const {
+    typename std::enable_if_t<N == 3, Vec<U, 3>> operator^(const Vec &v) const {
         return Vec(data[1] * v[2] - data[2] * v[1], data[2] * v[0] - data[0] * v[2],
                    data[0] * v[1] - data[1] * v[0]);
     }
