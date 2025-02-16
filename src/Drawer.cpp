@@ -6,10 +6,9 @@
 #include <cmath>
 #include <limits>
 #include <utility>
+#include <vector>
 
 namespace {
-using Vec4i = Vec<int, 4>;
-
 // Returns bounding box [min_x, max_x, min_y, max_y] for a set of points
 template <size_t N>
 Vec4i find_bbox(const std::array<Vec2i, N> &pts) {
@@ -32,6 +31,28 @@ bool is_inside(Vec2f p, Vec2i t0, Vec2i t1, Vec2i t2) {
     float b = (Vec3f(t2 - t1) ^ Vec3f(p - t1))[2];
     float c = (Vec3f(t0 - t2) ^ Vec3f(p - t2))[2];
     return (a >= 0 && b >= 0 && c >= 0) || (a <= 0 && b <= 0 && c <= 0);
+}
+
+// Returns barycentric coordinates of point p in triangle t0, t1, t2
+Vec3f barycentric(Vec2f p, Vec2f t0, Vec2f t1, Vec2f t2) {
+    auto v01 = t1 - t0;
+    auto v02 = t2 - t0;
+    auto v0p = p - t0;
+
+    Vec2f nac(t0[1] - t2[1], -t0[0] + t2[0]);
+    Vec2f nab(t0[1] - t1[1], -t0[0] + t1[0]);
+
+    float beta = (v0p * nac) / (v01 * nac);
+    float gamma = (v0p * nab) / (v02 * nab);
+    float alpha = 1.f - beta - gamma;
+
+    return {alpha, beta, gamma};
+}
+
+// Returns z-coordinate of point p in triangle t0, t1, t2
+float zInterpolate(Vec2f p, Vec3f t0, Vec3f t1, Vec3f t2) {
+    Vec3f bary = barycentric(p, t0, t1, t2);
+    return bary[0] * t0[2] + bary[1] * t1[2] + bary[2] * t2[2];
 }
 } // namespace
 
@@ -73,13 +94,27 @@ void line(Vec2i u, Vec2i v, TGAImage &image, TGAColor color) {
     }
 }
 
-void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color) {
+void triangle(const std::array<Vec3f, 3> &pts, std::vector<float> &zbuffer,
+              TGAImage &image, TGAColor color) {
+    Vec2i t0(pts[0]);
+    Vec2i t1(pts[1]);
+    Vec2i t2(pts[2]);
+
     const auto bbox = find_bbox(std::array{t0, t1, t2});
+
     for (int x = bbox[0]; x <= bbox[1]; x++) {
         for (int y = bbox[2]; y <= bbox[3]; y++) {
             Vec2f p(static_cast<float>(x) + 0.5f, static_cast<float>(y) + 0.5f);
+
             if (is_inside(p, t0, t1, t2)) {
-                image.set(x, y, color);
+                float z = zInterpolate(p, pts[0], pts[1], pts[2]);
+
+                auto index =
+                    static_cast<size_t>(y) * image.get_width() + static_cast<size_t>(x);
+                if (zbuffer[index] < z) {
+                    zbuffer[index] = z;
+                    image.set(x, y, color);
+                }
             }
         }
     }

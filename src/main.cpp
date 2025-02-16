@@ -10,10 +10,11 @@
 #include <vector>
 
 int main() {
-    constexpr int width = 800;
-    constexpr int height = 800;
+    constexpr size_t width = 800;
+    constexpr size_t height = 800;
 
     TGAImage image(width, height, TGAImage::RGB);
+    std::vector<float> zbuffer(width * height, std::numeric_limits<float>::min());
 
     Model model("obj/african_head/african_head.obj");
 
@@ -25,13 +26,13 @@ int main() {
     for (size_t i = 0; i < model.nfaces(); i++) {
         std::vector<size_t> face = model.face(i);
 
-        std::array<Vec2i, 3> screen_coords;
+        std::array<Vec3f, 3> screen_coords;
         std::array<Vec3f, 3> world_coords;
 
         for (size_t j = 0; j < 3; j++) {
             Vec3f v = model.vert(face[j]);
-            screen_coords[j] = Vec2i(static_cast<int>((v[0] + 1.f) * width / 2.f),
-                                     static_cast<int>((v[1] + 1.f) * height / 2.f));
+            screen_coords[j] =
+                Vec3f((v[0] + 1.f) * width / 2.f, (v[1] + 1.f) * height / 2.f, v[2]);
             world_coords[j] = v;
         }
 
@@ -43,7 +44,7 @@ int main() {
             TGAColor color(static_cast<std::uint8_t>(intensity * 255),
                            static_cast<std::uint8_t>(intensity * 255),
                            static_cast<std::uint8_t>(intensity * 255));
-            triangle(screen_coords[0], screen_coords[1], screen_coords[2], image, color);
+            triangle(screen_coords, zbuffer, image, color);
         }
     }
 

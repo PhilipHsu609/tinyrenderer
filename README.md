@@ -16,3 +16,7 @@ My implementation of [ssloy/tinyrenderer](https://github.com/ssloy/tinyrenderer)
 - Triangle rasterization
   - Barycentric coordinates
 - Back face culling
+
+## Lesson 3: Hidden faces removal (z buffer)
+
+- Z buffer
