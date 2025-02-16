@@ -3,7 +3,7 @@
 #include <fmt/core.h>
 #include <gtest/gtest.h>
 
-TEST(Vec3, Operators) {
+TEST(Vector, Operators) {
     Vec3f v1(1.0f, 2.0f, 3.0f);
     Vec3f v2(4.0f, 5.0f, 6.0f);
 
@@ -59,4 +59,10 @@ TEST(Vec3, Operators) {
     // Test type conversion
     Vec3i v5(v3);
     EXPECT_TRUE(v5 == Vec3i(-4, -5, -6));
+
+    // Test vector size conversion
+    Vec2f v6(v3);
+    EXPECT_TRUE(v6 == Vec2f(-4.0f, -5.0f));
+    Vec3f v7(v6);
+    EXPECT_TRUE(v7 == Vec3f(-4.0f, -5.0f, 0.0f));
 }

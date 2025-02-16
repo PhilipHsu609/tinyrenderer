@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <cmath>
@@ -13,16 +14,15 @@ class Vec {
   public:
     Vec() { data.fill(T(0)); }
 
-    template <typename... Args,
-              typename = std::enable_if_t<(std::is_same_v<T, Args> && ...)>>
+    template <typename... Args>
     Vec(Args... args) : data{{args...}} {
         static_assert(sizeof...(args) == N,
                       "Number of arguments must match the dimension of the vector");
     }
 
-    template <typename U, size_t M, typename = std::enable_if_t<M <= N>>
+    template <typename U, size_t M>
     Vec(const Vec<U, M> &v) {
-        for (size_t i = 0; i < M; ++i) {
+        for (size_t i = 0; i < std::min(M, N); ++i) {
             data[i] = static_cast<T>(v[i]);
         }
     }
@@ -144,9 +144,14 @@ class Vec {
     }
 };
 
+using Vec4f = Vec<float, 4>;
 using Vec3f = Vec<float, 3>;
 using Vec2f = Vec<float, 2>;
+
+using Vec4d = Vec<double, 4>;
 using Vec3d = Vec<double, 3>;
 using Vec2d = Vec<double, 2>;
+
+using Vec4i = Vec<int, 4>;
 using Vec3i = Vec<int, 3>;
 using Vec2i = Vec<int, 2>;
